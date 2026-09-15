@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Electoral | Consejo Nacional Electoral - Pereira Roleplay</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- INSTITUTIONAL HEADER -->
+  <header class="cne-header">
+    <div class="cne-header-inner">
+      <div class="cne-brand">
+        <!-- Official Pereira Roleplay Logo -->
+        <img src="assets/logo.png" alt="Pereira Roleplay Logo" class="cne-logo" style="height:65px; width:auto; object-fit:contain;">
+        <div class="cne-brand-titles">
+          <span class="cne-org-name">CONSEJO NACIONAL ELECTORAL</span>
+          <h1 class="cne-sys-title">SISTEMA ELECTORAL WEB</h1>
+          <span class="cne-sub-title">Pereira Roleplay • Plataforma Oficial de Votación</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        <div class="cne-header-badge">
+          <span class="cne-status-dot"></span> PLATAFORMA CIUDADANA
+        </div>
+        <a href="admin.html" class="admin-access-btn" title="Acceso a Panel Administrativo">
+          <i class="fas fa-user-shield"></i> Panel Admin
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CITIZEN NAVIGATION BAR -->
+  <nav class="citizen-nav">
+    <div class="citizen-nav-inner">
+      <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="citizen-menu" id="citizenMenu">
+        <li class="citizen-nav-item active" data-tab="inicio">
+          <i class="fas fa-house"></i> Inicio
+        </li>
+        <li class="citizen-nav-item" data-tab="elecciones">
+          <i class="fas fa-box-archive"></i> Elecciones
+        </li>
+        <li class="citizen-nav-item" data-tab="candidatos">
+          <i class="fas fa-id-card"></i> Candidatos
+        </li>
+        <li class="citizen-nav-item" data-tab="votar">
+          <i class="fas fa-check-to-slot"></i> Votar
+        </li>
+        <li class="citizen-nav-item" data-tab="resultados">
+          <i class="fas fa-chart-pie"></i> Resultados
+        </li>
+        <li class="citizen-nav-item" data-tab="normativa">
+          <i class="fas fa-scale-balanced"></i> Normativa
+        </li>
+        <li class="citizen-nav-item" data-tab="certificado">
+          <i class="fas fa-certificate"></i> Mi Certificado
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="main-container">
+
+    <!-- 1. TAB: INICIO -->
+    <section class="tab-content active" id="tab-inicio">
+      <div id="homeHeroElection"></div>
+
+      <h3 style="margin: 2.5rem 0 1.5rem 0; color: var(--cne-dark-black); display:flex; align-items:center; gap:0.6rem;">
+        <i class="fas fa-list-check" style="color:var(--cne-olive-medium);"></i> Procesos Electorales Programados
+      </h3>
+
+      <div class="grid-3" id="homeAvailableElections"></div>
+    </section>
+
+    <!-- 2. TAB: ELECCIONES -->
+    <section class="tab-content" id="tab-elecciones">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title"><i class="fas fa-box-archive"></i> Catálogo General de Elecciones</h2>
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <select class="form-control" id="filterStatus" style="width: 210px;">
+              <option value="ALL">Todos los Estados</option>
+              <option value="Abierta">Abiertas</option>
+              <option value="Próxima">Próximas</option>
+              <option value="Cerrada">Cerradas</option>
+              <option value="Suspendida">Suspendidas</option>
+              <option value="Finalizada">Finalizadas</option>
+            </select>
+            <input type="text" class="form-control" id="searchElection" placeholder="Buscar elección o cargo..." style="width: 250px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" id="electionsGrid"></div>
+    </section>
+
+    <!-- 3. TAB: CANDIDATOS -->
+    <section class="tab-content" id="tab-candidatos">
+      <div class="card" style="margin-bottom:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <h2 class="card-title"><i class="fas fa-users-viewfinder"></i> Candidatos Inscritos por Elección</h2>
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <label class="form-label" style="margin:0;">Seleccionar Elección:</label>
+            <select class="form-control" id="candidateElectionSelect" style="width:340px;"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" id="candidatesGrid"></div>
+    </section>
+
+    <!-- 4. TAB: VOTAR (15 STEPS WIZARD) -->
+    <section class="tab-content" id="tab-votar">
+      <div class="voting-wizard">
+        
+        <!-- Progress Bar Node Indicator -->
+        <div class="wizard-progress-bar">
+          <div class="wizard-progress-fill" id="wizFill" style="width:0%;"></div>
+          <div class="wizard-step-node active" id="wizNode1">1</div>
+          <div class="wizard-step-node" id="wizNode2">2</div>
+          <div class="wizard-step-node" id="wizNode3">3</div>
+          <div class="wizard-step-node" id="wizNode4">4</div>
+        </div>
+
+        <!-- WIZARD STEP 1: Identification & Election Selection -->
+        <div class="wizard-step-pane active" id="wizStep1">
+          <h3 style="color:var(--cne-dark-green); margin-bottom:0.5rem;">Paso 1: Validación de Ciudadano Habilitado</h3>
+          <p style="color:var(--cne-text-muted); margin-bottom:1.75rem;">Seleccione el proceso electoral activo e ingrese su usuario exacto de Roblox registrado en el censo electoral.</p>
+
+          <div class="form-group">
+            <label class="form-label">Elección Activa:</label>
+            <select class="form-control" id="voteElectionSelect"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nombre de Usuario de Roblox:</label>
+            <input type="text" class="form-control" id="voteRobloxUsername" placeholder="Ej: CiudadanoRoblox" autocomplete="off">
+            <small style="color:var(--cne-sage-muted); margin-top:0.35rem; display:block;">
+              <i class="fas fa-circle-info"></i> Debe estar previamente habilitado en el censo electoral.
+            </small>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-top:2.5rem;">
+            <button class="btn btn-primary btn-lg" onclick="CitizenApp.validateStep1AndProceed()">
+              Continuar a Selección de Candidato <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- WIZARD STEP 2: Candidate Selection -->
+        <div class="wizard-step-pane" id="wizStep2">
+          <h3 style="color:var(--cne-dark-green); margin-bottom:0.5rem;">Paso 2: Tarjetón Electoral de Candidaturas</h3>
+          <p style="color:var(--cne-text-muted); margin-bottom:1.75rem;">Seleccione el candidato o la opción de su preferencia para registrar su voto.</p>
+
+          <div id="wizardCandidatesList"></div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:2.5rem;">
+            <button class="btn btn-secondary" onclick="CitizenApp.goToWizardStep(1)"><i class="fas fa-arrow-left"></i> Atrás</button>
+            <button class="btn btn-primary btn-lg" onclick="CitizenApp.validateStep2AndProceed()">
+              Revisar Resumen del Voto <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- WIZARD STEP 3: Summary & Confirmation -->
+        <div class="wizard-step-pane" id="wizStep3">
+          <h3 style="color:var(--cne-dark-green); margin-bottom:0.5rem;">Paso 3: Confirmación Final de Voto</h3>
+          <p style="color:var(--cne-text-muted); margin-bottom:1.75rem;">Por favor verifique los datos. Recuerde que <strong>solo puede votar una (1) vez</strong> por elección.</p>
+
+          <div id="voteSummaryBox"></div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:2.5rem;">
+            <button class="btn btn-secondary" onclick="CitizenApp.goToWizardStep(2)"><i class="fas fa-arrow-left"></i> Modificar Selección</button>
+            <button class="btn btn-success btn-lg" onclick="CitizenApp.confirmAndCastVote()">
+              <i class="fas fa-check-circle"></i> Confirmar y Registrar Voto
+            </button>
+          </div>
+        </div>
+
+        <!-- WIZARD STEP 4: Success & Electoral Certificate Preview -->
+        <div class="wizard-step-pane" id="wizStep4">
+          <div style="text-align:center; padding:1.5rem 0;">
+            <i class="fas fa-circle-check" style="font-size:4.5rem; color:var(--cne-accent-emerald); margin-bottom:1rem;"></i>
+            <h2 style="color:var(--cne-dark-black); margin-bottom:0.5rem;">¡Voto Registrado Correctamente!</h2>
+            <p style="color:var(--cne-text-muted); max-width:640px; margin:0 auto 1.75rem auto; font-size:1.05rem;">
+              Su voto ha sido contabilizado exitosamente en el sistema de escrutinio oficial del Consejo Nacional Electoral de Pereira Roleplay.
+            </p>
+
+            <div style="display:flex; justify-content:center; gap:1.25rem; margin-bottom:2.5rem;">
+              <button class="btn btn-primary btn-lg" onclick="CitizenApp.downloadCurrentCertificate()">
+                <i class="fas fa-download"></i> Descargar Certificado Electoral (PNG)
+              </button>
+              <button class="btn btn-secondary btn-lg" onclick="CitizenApp.switchTab('resultados')">
+                <i class="fas fa-chart-pie"></i> Ver Resultados en Vivo
+              </button>
+            </div>
+          </div>
+
+          <h4 style="color:var(--cne-dark-green); margin-bottom:1.25rem; text-align:center;">Vista Previa del Certificado Electoral Oficial</h4>
+          
+          <div class="certificate-wrapper">
+            <div class="certificate-canvas-container">
+              <canvas id="certificateCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. TAB: RESULTADOS -->
+    <section class="tab-content" id="tab-resultados">
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <h2 class="card-title"><i class="fas fa-chart-pie"></i> Escrutinio y Resultados en Tiempo Real</h2>
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <label class="form-label" style="margin:0;">Elección:</label>
+            <select class="form-control" id="resultsElectionSelect" style="width:360px;"></select>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultsDisplayArea"></div>
+    </section>
+
+    <!-- 6. TAB: NORMATIVA -->
+    <section class="tab-content" id="tab-normativa">
+      <div class="card">
+        <h2 class="card-title" style="margin-bottom:1.75rem;"><i class="fas fa-gavel"></i> Código Electoral y Reglametación Oficial</h2>
+
+        <div class="accordion">
+          
+          <div class="accordion-item active">
+            <div class="accordion-header">
+              <span><i class="fas fa-balance-scale"></i> 1. Derecho al Voto y Soberanía Democrática</span>
+              <i class="fas fa-chevron-down accordion-icon"></i>
+            </div>
+            <div class="accordion-content">
+              El voto es un derecho y un deber ciudadano fundamental en Pereira Roleplay. Todos los ciudadanos inscritos en el censo electoral oficial tienen derecho a ejercer su sufragio de manera libre, directa, secreta y sin presiones de ninguna índole.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span><i class="fas fa-address-book"></i> 2. Censo Electoral y Ciudadanos Habilitados</span>
+              <i class="fas fa-chevron-down accordion-icon"></i>
+            </div>
+            <div class="accordion-content">
+              El censo electoral es elaborado y administrado de forma exclusiva por el Consejo Nacional Electoral (CNE). Solo podrán votar los usuarios de Roblox cuyos nombres hayan sido debidamente verificados y cargados por la administración electoral previa apertura de las mesas.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span><i class="fas fa-fingerprint"></i> 3. Principio de Voto Único por Elección</span>
+              <i class="fas fa-chevron-down accordion-icon"></i>
+            </div>
+            <div class="accordion-content">
+              Cada ciudadano habilitado puede votar <strong>únicamente una (1) vez</strong> en cada proceso electoral. El sistema informático asigna un número de votante consecutivo e impide cualquier intento subsecuente de sufragio.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span><i class="fas fa-award"></i> 4. Expedición de Certificado Electoral</span>
+              <i class="fas fa-chevron-down accordion-icon"></i>
+            </div>
+            <div class="accordion-content">
+              Todo ciudadano que ejerza su derecho al voto recibirá de manera inmediata su Certificado Electoral oficial firmado por la Presidencia del CNE, el cual otorga constancia de participación y posibles estímulos en la ciudad de Pereira Roleplay.
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span><i class="fas fa-shield-halved"></i> 5. Transparencia y Auditoría del Escrutinio</span>
+              <i class="fas fa-chevron-down accordion-icon"></i>
+            </div>
+            <div class="accordion-content">
+              Los resultados son computados automáticamente en tiempo real con cifrado de verificación local y hashes de auditoría para garantizar la integridad inviolable de los cómputos electorales.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. TAB: MI CERTIFICADO -->
+    <section class="tab-content" id="tab-certificado">
+      <div class="card" style="max-width:720px; margin:0 auto 2rem auto;">
+        <h2 class="card-title" style="margin-bottom:1rem;"><i class="fas fa-certificate"></i> Consulta y Descarga de Certificados</h2>
+        <p style="color:var(--cne-text-muted); margin-bottom:1.5rem;">Ingrese su nombre de usuario de Roblox para consultar y volver a descargar sus certificados de votación emitidos.</p>
+
+        <div style="display:flex; gap:1rem;">
+          <input type="text" class="form-control" id="lookupUsername" placeholder="Nombre de usuario Roblox...">
+          <button class="btn btn-primary" onclick="CitizenApp.lookupCertificate()"><i class="fas fa-magnifying-glass"></i> Consultar</button>
+        </div>
+      </div>
+
+      <div id="certLookupResults" style="max-width:920px; margin:0 auto;"></div>
+    </section>
+
+  </main>
+
+  <!-- GENERIC MODAL -->
+  <div class="modal-backdrop" id="genericModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Título Modal</h3>
+        <button class="modal-close" onclick="document.getElementById('genericModal').classList.remove('active')">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="document.getElementById('genericModal').classList.remove('active')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTITUTIONAL FOOTER -->
+  <footer class="cne-footer">
+    <div class="cne-footer-inner">
+      <div style="display:flex; align-items:center; gap:1.25rem;">
+        <img src="assets/logo.png" alt="Pereira Roleplay Logo" style="height:55px; width:auto;">
+        <div>
+          <h4 style="color:#FFF; font-size:1.1rem; margin-bottom:0.15rem;">Consejo Nacional Electoral</h4>
+          <p style="opacity:0.8; font-size:0.85rem;">Pereira Roleplay • Plataforma Institucional Democrática</p>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <p style="opacity:0.9; font-weight:700;">Presidencia del CNE: <span style="color:var(--cne-accent-gold);">David Chaux</span></p>
+        <p style="font-size:0.8rem; opacity:0.65;">Una ciudad que avanza junta • 2026</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/certificate.js"></script>
+  <script src="js/citizen.js"></script>
+</body>
+</html>
