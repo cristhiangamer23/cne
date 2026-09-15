@@ -1,0 +1,18 @@
+# Dependencias (Railway las instala con npm install)
+node_modules/
+
+# Datos locales generados en tiempo de ejecución
+data/
+
+# Variables de entorno (contienen claves secretas)
+# Railway: configúralas como Variables del proyecto, NO las subas a git.
+
+# Registros y temporales
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Carpetas de sistema
+.vscode/
+.idea/
