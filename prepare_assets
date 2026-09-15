@@ -1,0 +1,43 @@
+Add-Type -AssemblyName System.Drawing
+
+$srcFirma = 'C:\Users\USUARIO\.gemini\antigravity\brain\cfab4bd3-2edf-4dd2-82aa-7affb67a51ad\.user_uploaded\media__1788634715003.png'
+$srcTemplate = 'C:\Users\USUARIO\.gemini\antigravity\brain\cfab4bd3-2edf-4dd2-82aa-7affb67a51ad\.user_uploaded\media__1788634715060.jpg'
+$srcLogo = 'C:\Users\USUARIO\.gemini\antigravity\brain\cfab4bd3-2edf-4dd2-82aa-7affb67a51ad\.user_uploaded\media__1788634743756.png'
+
+$destDir = 'C:\Users\USUARIO\.gemini\antigravity\scratch\sistema-electoral-pereira\assets'
+if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force }
+
+# Copy Logo
+Copy-Item -Path $srcLogo -Destination "$destDir\logo.png" -Force
+
+# Copy Template
+Copy-Item -Path $srcTemplate -Destination "$destDir\plantilla_certificado.jpg" -Force
+Copy-Item -Path $srcFirma -Destination "$destDir\firma_raw.png" -Force
+
+# Process Signature to remove white background
+$bmp = New-Object System.Drawing.Bitmap($srcFirma)
+for ($y = 0; $y -lt $bmp.Height; $y++) {
+    for ($x = 0; $x -lt $bmp.Width; $x++) {
+        $c = $bmp.GetPixel($x, $y)
+        # Check if color is light/white (R>200, G>200, B>200)
+        if ($c.R -gt 200 -and $c.G -gt 200 -and $c.B -gt 200) {
+            # Make transparent
+            $bmp.SetPixel($x, $y, [System.Drawing.Color]::FromArgb(0, $c.R, $c.G, $c.B))
+        } else {
+            # Keep original black/dark ink with crisp opacity
+            # Optional smooth alpha calculation if near edge
+            if ($c.R -gt 150 -and $c.G -gt 150 -and $c.B -gt 150) {
+                $alpha = [int](255 * (255 - (($c.R + $c.G + $c.B) / 3)) / 105)
+                if ($alpha -lt 0) { $alpha = 0 }
+                if ($alpha -gt 255) { $alpha = 255 }
+                $bmp.SetPixel($x, $y, [System.Drawing.Color]::FromArgb($alpha, 0, 0, 0))
+            } else {
+                $bmp.SetPixel($x, $y, [System.Drawing.Color]::FromArgb(255, 0, 0, 0))
+            }
+        }
+    }
+}
+$bmp.Save("$destDir\firma.png", [System.Drawing.Imaging.ImageFormat]::Png)
+$bmp.Dispose()
+
+Write-Host "Assets successfully copied and processed!"
