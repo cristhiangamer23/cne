@@ -1,0 +1,14 @@
+{
+  "name": "sistema-electoral-pereira",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema Electoral de Pereira Roleplay - Consejo Nacional Electoral",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "ws": "^8.21.3"
+  }
+}
